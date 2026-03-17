@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>n0un</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            margin: 0;
+            display: flex;
+            flex-direction: column; /* Stack logo and link */
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+            cursor: default;
+        }
+
+        /* The container for the logo */
+        .logo-box {
+            font-size: 3.5rem;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            letter-spacing: -2px;
+            margin-bottom: 10px; /* Space between logo and link */
+        }
+
+        /* The hidden letters */
+        .fade-text {
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+            pointer-events: none;
+        }
+
+        /* The central slashed zero */
+        .symbol {
+            color: #fff;
+            padding: 0 10px;
+        }
+
+        /* Reveal n and un when hovering over the logo-box */
+        .logo-box:hover .fade-text {
+            opacity: 1;
+        }
+
+        /* The Link directly below the logo */
+        .archive-link {
+            font-size: 0.8rem;
+            color: #666; /* Subdued grey */
+            text-decoration: none;
+            letter-spacing: 4px;
+            transition: color 0.4s, letter-spacing 0.4s;
+            text-transform: uppercase;
+        }
+
+        .archive-link:hover {
+            color: #fff;
+            letter-spacing: 6px; /* Subtle expansion on hover */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="logo-box">
+        <span class="fade-text">n</span>
+        <span class="symbol">Ø</span>
+        <span class="fade-text">un</span>
+    </div>
+
+    <a href="https://drive.google.com/drive/folders/1hButlq3GQ_U0oimgodWiWCJ38m9Xkp62?usp=drive_link" class="archive-link">DISPLACED</a>
+
+</body>
+</html>
