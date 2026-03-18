@@ -112,22 +112,48 @@
     // Clear input for next use
     input.value = "";
 
+    // 1. THE HELLO WORLD LINK
     if (val === "HELLO") {
-      resp.innerHTML = "REDIRECTING TO_ HELLO_WORLD.ARC";
+      resp.innerHTML = "ACCESSING_ HELLO_WORLD.ARC";
       resp.style.color = "white";
-      setTimeout(() => { window.location.href = "YOUR_PROTON_LINK_HERE"; }, 1000);
+      setTimeout(() => { 
+        window.location.href = "https://drive.proton.me/urls/6B2F8EZYV8#gJcrCVqot1HC"; 
+      }, 1000);
     } 
+
+    // 2. THE FULL ARCHIVE (Optional - change the code/link as needed)
     else if (val === "DISPLACED") {
-      resp.innerHTML = "ACCESSING_ ARCHIVE_MAIN";
+      resp.innerHTML = "RECOVERING_ MAIN_ARCHIVE";
       resp.style.color = "white";
-      setTimeout(() => { window.location.href = "YOUR_ARCHIVE_LINK_HERE"; }, 1000);
+      setTimeout(() => { 
+        window.location.href = "YOUR_MAIN_PROTON_FOLDER_LINK"; 
+      }, 1000);
     } 
+
+    // 3. FUTURE EASTER EGG EXAMPLE (Just copy-paste this block for new codes)
+    else if (val === "LDN_01") {
+      resp.innerHTML = "INTERCEPTING_ COORDINATES_v2";
+      resp.style.color = "#00FF41"; // Matrix Green for a special egg
+      setTimeout(() => { 
+        window.location.href = "LINK_TO_A_MAP_OR_IMAGE"; 
+      }, 1000);
+    } 
+// 4. THIS IS A TEST TO 123
+  else if (val === "234") {
+      resp.innerHTML = "LOADING";
+      resp.style.color = "#00FF41"; // Matrix Green for a special egg
+      setTimeout(() => { 
+        window.location.href = "https://drive.proton.me/urls/HA0V5PN2KG#nSNdPnxzqsHR"; 
+      }, 1000);
+    } 
+
+    // ERROR HANDLING
     else if (val === "") {
       resp.innerHTML = "NULL_INPUT";
       resp.style.color = "#555";
     }
     else {
-      resp.innerHTML = "ERROR: CODE_INVALID";
+      resp.innerHTML = "ERROR: CODE_INVALID_OR_DISPLACED";
       resp.style.color = "red";
     }
   }
