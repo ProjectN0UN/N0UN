@@ -71,7 +71,67 @@
         <span class="fade-text">un</span>
     </div>
 
-    <a href="https://drive.proton.me/urls/2SCEYPDFDC#On0rRQk7NPIw" class="archive-link">DISPLACED</a>
+    <a href="https://drive.google.com/drive/folders/1hButlq3GQ_U0oimgodWiWCJ38m9Xkp62?usp=drive_link" class="archive-link">DISPLACED</a>
+
+
+<div id="terminal-container" style="text-align: center; margin-top: 20vh; font-family: monospace;">
+  
+  <div id="input-line" style="display: inline-block; position: relative;">
+    <span style="color: white; margin-right: 10px;">></span>
+    <input type="text" id="query-input" autofocus 
+           style="background: transparent; color: white; border: none; outline: none; font-family: monospace; font-size: 1.2rem; width: 200px; text-transform: uppercase;" 
+           onkeydown="if(event.key==='Enter') processQuery()">
+    <span class="cursor" style="color: white; font-weight: bold; position: absolute; right: -5px; bottom: 2px;">_</span>
+  </div>
+
+  <div id="response" style="margin-top: 30px; color: #555; font-size: 0.9rem;">
+    READY FOR INPUT_
+  </div>
+
+</div>
+
+<style>
+  /* The Blinking Animation */
+  .cursor {
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink {
+    from, to { opacity: 1; }
+    50% { opacity: 0; }
+  }
+  /* Remove mobile blue highlight on tap */
+  input { -webkit-tap-highlight-color: transparent; }
+</style>
+
+<script>
+  function processQuery() {
+    const input = document.getElementById("query-input");
+    const val = input.value.toUpperCase().trim();
+    const resp = document.getElementById("response");
+
+    // Clear input for next use
+    input.value = "";
+
+    if (val === "HELLO") {
+      resp.innerHTML = "REDIRECTING TO_ HELLO_WORLD.ARC";
+      resp.style.color = "white";
+      setTimeout(() => { window.location.href = "YOUR_PROTON_LINK_HERE"; }, 1000);
+    } 
+    else if (val === "DISPLACED") {
+      resp.innerHTML = "ACCESSING_ ARCHIVE_MAIN";
+      resp.style.color = "white";
+      setTimeout(() => { window.location.href = "YOUR_ARCHIVE_LINK_HERE"; }, 1000);
+    } 
+    else if (val === "") {
+      resp.innerHTML = "NULL_INPUT";
+      resp.style.color = "#555";
+    }
+    else {
+      resp.innerHTML = "ERROR: CODE_INVALID";
+      resp.style.color = "red";
+    }
+  }
+</script>
 
 </body>
 </html>
