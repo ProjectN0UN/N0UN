@@ -103,68 +103,35 @@
   input { -webkit-tap-highlight-color: transparent; }
 </style>
 
-<script>
-  function processQuery() {
+    <script>
+  async function processQuery() {
     const input = document.getElementById("query-input");
     const val = input.value.toUpperCase().trim();
     const resp = document.getElementById("response");
-
-    // Clear input for next use
     input.value = "";
 
-    // 1. THE HELLO WORLD LINK
-    if (val === "HELLO") {
-      resp.innerHTML = "ACCESSING_ HELLO_WORLD.ARC";
-      resp.style.color = "white";
-      setTimeout(() => { 
-        window.location.href = "https://drive.proton.me/urls/6B2F8EZYV8#gJcrCVqot1HC"; 
-      }, 1000);
-    } 
+    try {
+      // This line "calls" the new JSON file you just created
+      const response = await fetch('codes.json');
+      const codes = await response.json();
 
-    // 2. THE FULL ARCHIVE (Optional - change the code/link as needed)
-    else if (val === "DISPLACED") {
-      resp.innerHTML = "RECOVERING_ MAIN_ARCHIVE";
-      resp.style.color = "white";
-      setTimeout(() => { 
-        window.location.href = "YOUR_MAIN_PROTON_FOLDER_LINK"; 
-      }, 1000);
-    } 
-
-    // 3. FUTURE EASTER EGG EXAMPLE (Just copy-paste this block for new codes)
-    else if (val === "LDN_01") {
-      resp.innerHTML = "INTERCEPTING_ COORDINATES_v2";
-      resp.style.color = "#00FF41"; // Matrix Green for a special egg
-      setTimeout(() => { 
-        window.location.href = "LINK_TO_A_MAP_OR_IMAGE"; 
-      }, 1000);
-    }
- 
-   // 4. Statue_9F229E3E
-   else if (val === "9F229E3E") {
-      resp.innerHTML = "LOADING";
-      resp.style.color = "#00FF41"; // Matrix Green for a special egg
-      setTimeout(() => { 
-        window.location.href = "https://drive.proton.me/urls/K898RY73TG#PI3jE4TNsmL5"; 
-      }, 1000);
-    } 
-
-  // 5. NEXT IMAGE/LINK
-  else if (val === "NEXTNUMBERREPLACE") {
-  resp.innerHTML = "RECOVERING_ VISUAL_DATA";
-  resp.style.color = "white";
-  setTimeout(() => { 
-    window.location.href = "https://drive.proton.me/urls/YOUR_NEW_IMAGE_LINK"; 
-  }, 1000);
-}
-
-    // ERROR HANDLING
-    else if (val === "") {
-      resp.innerHTML = "NULL_INPUT";
-      resp.style.color = "#555";
-    }
-    else {
-      resp.innerHTML = "ERROR: CODE_INVALID_OR_DISPLACED";
-      resp.style.color = "red";
+      if (codes[val]) {
+        const entry = codes[val];
+        resp.innerHTML = `ACCESSING_ ${entry.title}...`;
+        resp.style.color = "white";
+        
+        // Short delay for the "system" aesthetic
+        setTimeout(() => { 
+          window.location.href = entry.url; 
+        }, 1200);
+      } else {
+        resp.innerHTML = "ERROR: CODE_NOT_FOUND";
+        resp.style.color = "red";
+      }
+    } catch (e) {
+      // This triggers if the codes.json file is missing or has a typo
+      resp.innerHTML = "SYSTEM_ERROR: DATABASE_OFFLINE";
+      console.error(e);
     }
   }
 </script>
