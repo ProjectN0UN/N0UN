@@ -115,6 +115,8 @@
             font-size: 0.8rem;
             letter-spacing: 2px;
             text-transform: uppercase;
+            /* Smooth transition for the color and text reset */
+            transition: color 0.5s ease, opacity 0.5s ease;
         }
 
         /* --- HELP TRIGGER --- */
@@ -234,48 +236,4 @@
 
     <script>
         // Modal Controls
-        function openModal(e) { e.preventDefault(); document.getElementById("displaced-modal").style.display = "block"; }
-        function closeModal() { document.getElementById("displaced-modal").style.display = "none"; }
-        
-        function openHelpModal() { document.getElementById("help-modal").style.display = "block"; }
-        function closeHelpModal() { document.getElementById("help-modal").style.display = "none"; }
-
-        // General Close Logic
-        window.onclick = function(event) {
-            if (event.target.className === 'modal') {
-                event.target.style.display = "none";
-            }
-        }
-
-        async function processQuery() {
-            const input = document.getElementById("query-input");
-            const val = input.value.toUpperCase().trim();
-            const resp = document.getElementById("response");
-            input.value = "";
-
-            // Handle special system commands first
-            if (val === "MANIFEST") {
-                resp.innerHTML = "MANIFEST_COMMAND_PENDING_NEXT_UPDATE...";
-                resp.style.color = "#aaa";
-                return;
-            }
-
-            try {
-                const response = await fetch('codes.json');
-                const codes = await response.json();
-                if (codes[val]) {
-                    const entry = codes[val];
-                    resp.innerHTML = `ACCESSING_ ${entry.title}...`;
-                    resp.style.color = "white";
-                    setTimeout(() => { window.location.href = entry.url; }, 1200);
-                } else {
-                    resp.innerHTML = "ERROR: CODE_NOT_FOUND";
-                    resp.style.color = "red";
-                }
-            } catch (e) {
-                resp.innerHTML = "SYSTEM_ERROR: DATABASE_OFFLINE";
-            }
-        }
-    </script>
-</body>
-</html>
+        function openModal(e) {
