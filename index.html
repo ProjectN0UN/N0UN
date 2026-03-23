@@ -224,6 +224,23 @@
                     resp.style.color = "red";
                     setTimeout(resetResponse, 2000);
                 }
-            } catch (e) {
+           } catch (e) {
+                console.error("Fetch error:", e);
                 resp.innerHTML = "SYSTEM_ERROR: DATABASE_OFFLINE";
-                resp.style.color = "
+                resp.style.color = "red";
+                setTimeout(resetResponse, 2000);
+            }
+        } // This bracket closes the processQuery function
+
+        function resetResponse() {
+            const resp = document.getElementById("response");
+            resp.style.opacity = "0";
+            setTimeout(() => {
+                resp.innerHTML = "INPUT CODE_";
+                resp.style.color = "#444";
+                resp.style.opacity = "1";
+            }, 500);
+        }
+    </script>
+</body>
+</html>
