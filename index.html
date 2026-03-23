@@ -26,7 +26,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-bottom: 22vh; /* Large gap for spacing */
+            margin-bottom: 22vh;
         }
 
         .logo-box {
@@ -117,6 +117,19 @@
             text-transform: uppercase;
         }
 
+        /* --- HELP TRIGGER --- */
+        .help-trigger {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            color: #333;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.3s;
+            z-index: 900;
+        }
+        .help-trigger:hover { color: #fff; }
+
         /* --- MODAL --- */
         .modal {
             display: none; 
@@ -141,6 +154,10 @@
 
         .modal-header { color: #ff3b3b; font-size: 1.2rem; margin-bottom: 20px; letter-spacing: 2px; }
         .modal-body { color: #ccc; font-size: 0.9rem; line-height: 1.6; margin-bottom: 30px; }
+        
+        .command-item { margin-bottom: 15px; border-bottom: 1px solid #111; padding-bottom: 5px; }
+        .command-item b { color: #fff; display: block; margin-bottom: 2px; }
+
         .archive-btn { display: inline-block; color: #000; background-color: #fff; padding: 10px 20px; text-decoration: none; font-weight: bold; }
         
         .close-btn {
@@ -153,12 +170,16 @@
             cursor: pointer;
             border: 1px solid #333;
             padding: 8px 15px;
+            transition: all 0.3s;
         }
+        .close-btn:hover { color: #fff; border-color: #666; }
 
         input { -webkit-tap-highlight-color: transparent; }
     </style>
 </head>
 <body>
+
+    <div class="help-trigger" onclick="openHelpModal()">?</div>
 
     <div class="brand-group">
         <div class="logo-box">
@@ -190,16 +211,55 @@
         </div>
     </div>
 
+    <div id="help-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header" style="color: #fff;">SYSTEM_MANUAL</div>
+            <div class="modal-body" style="text-align: left;">
+                <div class="command-item">
+                    <b>MANIFEST</b>
+                    <span style="color: #666;">Show all global node statuses.</span>
+                </div>
+                <div class="command-item">
+                    <b>STATUS</b>
+                    <span style="color: #666;">Check network integrity.</span>
+                </div>
+                <div class="command-item">
+                    <b>[HEX_CODE]</b>
+                    <span style="color: #666;">Direct bypass to fragment data.</span>
+                </div>
+            </div>
+            <span class="close-btn" onclick="closeHelpModal()">CLOSE_MANUAL</span>
+        </div>
+    </div>
+
     <script>
+        // Modal Controls
         function openModal(e) { e.preventDefault(); document.getElementById("displaced-modal").style.display = "block"; }
         function closeModal() { document.getElementById("displaced-modal").style.display = "none"; }
-        window.onclick = function(event) { if (event.target == document.getElementById("displaced-modal")) { closeModal(); } }
+        
+        function openHelpModal() { document.getElementById("help-modal").style.display = "block"; }
+        function closeHelpModal() { document.getElementById("help-modal").style.display = "none"; }
+
+        // General Close Logic
+        window.onclick = function(event) {
+            if (event.target.className === 'modal') {
+                event.target.style.display = "none";
+            }
+        }
 
         async function processQuery() {
             const input = document.getElementById("query-input");
             const val = input.value.toUpperCase().trim();
             const resp = document.getElementById("response");
             input.value = "";
+
+            // Handle special system commands first
+            if (val === "MANIFEST") {
+                resp.innerHTML = "MANIFEST_COMMAND_PENDING_NEXT_UPDATE...";
+                resp.style.color = "#aaa";
+                return;
+            }
+
             try {
                 const response = await fetch('codes.json');
                 const codes = await response.json();
