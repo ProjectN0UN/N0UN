@@ -11,14 +11,14 @@
             margin: 0;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start; /* Start from top to control spacing */
+            justify-content: flex-start;
             align-items: center;
             height: 100vh;
             font-family: 'Courier New', Courier, monospace;
             overflow: hidden;
             cursor: default;
             transition: filter 0.5s ease;
-            padding-top: 10vh; /* Initial top padding */
+            padding-top: 12vh;
         }
 
         /* --- BRANDING GROUP --- */
@@ -26,7 +26,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-bottom: 20vh; /* THE GAP: Spaces branding away from terminal */
+            margin-bottom: 22vh; /* Large gap for spacing */
         }
 
         .logo-box {
@@ -35,7 +35,7 @@
             display: inline-flex;
             align-items: center;
             letter-spacing: -2px;
-            margin-bottom: 20px; /* Space between Logo and Displaced link */
+            margin-bottom: 20px;
         }
 
         .fade-text {
@@ -85,19 +85,17 @@
         #query-input { 
             background: transparent; 
             color: white; 
-            /* THE BOX: Subtle dashed border */
             border: 1px dashed #333; 
             outline: none; 
             font-family: monospace; 
             font-size: 1.2rem; 
-            width: 240px; 
+            width: 260px; 
             text-transform: uppercase; 
-            padding: 10px;
+            padding: 12px;
             transition: all 0.3s ease;
             text-align: center;
         }
 
-        /* Box brightens when user clicks to type */
         #query-input:focus {
             border: 1px solid #666;
             background-color: rgba(255, 255, 255, 0.03);
@@ -119,7 +117,7 @@
             text-transform: uppercase;
         }
 
-        /* --- MODAL STYLES --- */
+        /* --- MODAL --- */
         .modal {
             display: none; 
             position: fixed;
@@ -129,3 +127,95 @@
             background-color: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
+        }
+
+        .modal-content {
+            background-color: #000;
+            margin: 15vh auto;
+            padding: 40px;
+            border: 1px solid #333;
+            width: 85%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .modal-header { color: #ff3b3b; font-size: 1.2rem; margin-bottom: 20px; letter-spacing: 2px; }
+        .modal-body { color: #ccc; font-size: 0.9rem; line-height: 1.6; margin-bottom: 30px; }
+        .archive-btn { display: inline-block; color: #000; background-color: #fff; padding: 10px 20px; text-decoration: none; font-weight: bold; }
+        
+        .close-btn {
+            margin-top: 25px;
+            display: inline-block;
+            color: #999;
+            font-size: 0.75rem;
+            text-decoration: none;
+            letter-spacing: 2px;
+            cursor: pointer;
+            border: 1px solid #333;
+            padding: 8px 15px;
+        }
+
+        input { -webkit-tap-highlight-color: transparent; }
+    </style>
+</head>
+<body>
+
+    <div class="brand-group">
+        <div class="logo-box">
+            <span class="fade-text">n</span>
+            <span class="symbol">Ø</span>
+            <span class="fade-text">un</span>
+        </div>
+        <a href="#" class="archive-link" onclick="openModal(event)">DISPLACED</a>
+    </div>
+
+    <div id="terminal-container">
+        <div id="input-line">
+            <span style="color: #666; margin-right: 10px;">></span>
+            <input type="text" id="query-input" autofocus onkeydown="if(event.key==='Enter') processQuery()">
+            <span class="cursor">_</span>
+        </div>
+        <div id="response">INPUT CODE_</div>
+    </div>
+
+    <div id="displaced-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">ACCESS_WARNING</div>
+            <div class="modal-body">
+                SIGNAL DETECTED. ACCESSING DISPLACED ARCHIVE.<br><br>
+                <span style="color: #666;">[FILE_STATUS: UNVERIFIED]</span>
+            </div>
+            <a href="https://drive.proton.me/urls/T35B5M5WJC#hEpEU0iZyRw2" class="archive-btn" target="_blank">PROCEED</a>
+            <span class="close-btn" onclick="closeModal()">RETURN_TO_TERMINAL</span>
+        </div>
+    </div>
+
+    <script>
+        function openModal(e) { e.preventDefault(); document.getElementById("displaced-modal").style.display = "block"; }
+        function closeModal() { document.getElementById("displaced-modal").style.display = "none"; }
+        window.onclick = function(event) { if (event.target == document.getElementById("displaced-modal")) { closeModal(); } }
+
+        async function processQuery() {
+            const input = document.getElementById("query-input");
+            const val = input.value.toUpperCase().trim();
+            const resp = document.getElementById("response");
+            input.value = "";
+            try {
+                const response = await fetch('codes.json');
+                const codes = await response.json();
+                if (codes[val]) {
+                    const entry = codes[val];
+                    resp.innerHTML = `ACCESSING_ ${entry.title}...`;
+                    resp.style.color = "white";
+                    setTimeout(() => { window.location.href = entry.url; }, 1200);
+                } else {
+                    resp.innerHTML = "ERROR: CODE_NOT_FOUND";
+                    resp.style.color = "red";
+                }
+            } catch (e) {
+                resp.innerHTML = "SYSTEM_ERROR: DATABASE_OFFLINE";
+            }
+        }
+    </script>
+</body>
+</html>
