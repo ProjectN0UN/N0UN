@@ -10,13 +10,14 @@
             color: #fff;
             margin: 0;
             display: flex;
-            flex-direction: column; /* Stack logo and link */
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
             font-family: 'Courier New', Courier, monospace;
             overflow: hidden;
             cursor: default;
+            transition: filter 0.5s ease; /* Smooth transition for the blur */
         }
 
         /* The container for the logo */
@@ -26,115 +27,186 @@
             display: inline-flex;
             align-items: center;
             letter-spacing: -2px;
-            margin-bottom: 10px; /* Space between logo and link */
+            margin-bottom: 10px;
         }
 
-        /* The hidden letters */
         .fade-text {
             opacity: 0;
             transition: opacity 0.8s ease-in-out;
             pointer-events: none;
         }
 
-        /* The central slashed zero */
         .symbol {
             color: #fff;
             padding: 0 10px;
         }
 
-        /* Reveal n and un when hovering over the logo-box */
         .logo-box:hover .fade-text {
             opacity: 1;
         }
 
-        /* The Link directly below the logo */
         .archive-link {
             font-size: 0.8rem;
-            color: #666; /* Subdued grey */
+            color: #666;
             text-decoration: none;
             letter-spacing: 4px;
             transition: color 0.4s, letter-spacing 0.4s;
             text-transform: uppercase;
+            cursor: pointer;
         }
 
         .archive-link:hover {
             color: #fff;
-            letter-spacing: 6px; /* Subtle expansion on hover */
+            letter-spacing: 6px;
         }
+
+        /* --- MODAL STYLES --- */
+        .modal {
+            display: none; 
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px); /* This creates the blur effect */
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .modal-content {
+            background-color: #000;
+            margin: 15vh auto;
+            padding: 40px;
+            border: 1px solid #333;
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.05);
+        }
+
+        .modal-header {
+            color: #ff3b3b; /* Alert red */
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .modal-body {
+            color: #ccc;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .archive-btn {
+            display: inline-block;
+            color: #000;
+            background-color: #fff;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .archive-btn:hover {
+            background-color: #ccc;
+        }
+
+        .close-btn {
+            margin-top: 15px;
+            display: block;
+            color: #555;
+            font-size: 0.7rem;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        /* Terminal Styles */
+        #terminal-container { text-align: center; margin-top: 20vh; font-family: monospace; }
+        #input-line { display: inline-block; position: relative; }
+        #query-input { background: transparent; color: white; border: none; outline: none; font-family: monospace; font-size: 1.2rem; width: 200px; text-transform: uppercase; }
+        .cursor { animation: blink 1s step-end infinite; color: white; font-weight: bold; position: absolute; right: -5px; bottom: 2px; }
+        @keyframes blink { from, to { opacity: 1; } 50% { opacity: 0; } }
+        input { -webkit-tap-highlight-color: transparent; }
     </style>
 </head>
 <body>
 
-    <div class="logo-box">
-        <span class="fade-text">n</span>
-        <span class="symbol">Ø</span>
-        <span class="fade-text">un</span>
+    <div id="main-content" style="display: flex; flex-direction: column; align-items: center;">
+        <div class="logo-box">
+            <span class="fade-text">n</span>
+            <span class="symbol">Ø</span>
+            <span class="fade-text">un</span>
+        </div>
+
+        <a href="#" class="archive-link" onclick="openModal(event)">DISPLACED</a>
+
+        <div id="terminal-container">
+            <div id="input-line">
+                <span style="color: white; margin-right: 10px;">></span>
+                <input type="text" id="query-input" autofocus onkeydown="if(event.key==='Enter') processQuery()">
+                <span class="cursor">_</span>
+            </div>
+            <div id="response" style="margin-top: 30px; color: #555; font-size: 0.9rem;">
+                INPUT CODE_
+            </div>
+        </div>
     </div>
 
-    <a href="https://drive.proton.me/urls/T35B5M5WJC#hEpEU0iZyRw2" class="archive-link">DISPLACED</a>
-
-
-<div id="terminal-container" style="text-align: center; margin-top: 20vh; font-family: monospace;">
-  
-  <div id="input-line" style="display: inline-block; position: relative;">
-    <span style="color: white; margin-right: 10px;">></span>
-    <input type="text" id="query-input" autofocus 
-           style="background: transparent; color: white; border: none; outline: none; font-family: monospace; font-size: 1.2rem; width: 200px; text-transform: uppercase;" 
-           onkeydown="if(event.key==='Enter') processQuery()">
-    <span class="cursor" style="color: white; font-weight: bold; position: absolute; right: -5px; bottom: 2px;">_</span>
-  </div>
-
-  <div id="response" style="margin-top: 30px; color: #555; font-size: 0.9rem;">
-    INPUT CODE_
-  </div>
-
-</div>
-
-<style>
-  /* The Blinking Animation */
-  .cursor {
-    animation: blink 1s step-end infinite;
-  }
-  @keyframes blink {
-    from, to { opacity: 1; }
-    50% { opacity: 0; }
-  }
-  /* Remove mobile blue highlight on tap */
-  input { -webkit-tap-highlight-color: transparent; }
-</style>
+    <div id="displaced-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">ACCESS_WARNING</div>
+            <div class="modal-body">
+                SIGNAL DETECTED. YOU ARE ATTEMPTING TO ACCESS THE DISPLACED ARCHIVE.<br><br>
+                <span style="color: #666;">[FILE_STATUS: UNVERIFIED]</span>
+            </div>
+            <a href="https://drive.proton.me/urls/T35B5M5WJC#hEpEU0iZyRw2" class="archive-btn" target="_blank">PROCEED</a>
+            <span class="close-btn" onclick="closeModal()">TERMINATE_CONNECTION</span>
+        </div>
+    </div>
 
     <script>
-  async function processQuery() {
-    const input = document.getElementById("query-input");
-    const val = input.value.toUpperCase().trim();
-    const resp = document.getElementById("response");
-    input.value = "";
+        // Modal Logic
+        function openModal(e) {
+            e.preventDefault();
+            document.getElementById("displaced-modal").style.display = "block";
+        }
 
-    try {
-      // This line "calls" the new JSON file you just created
-      const response = await fetch('codes.json');
-      const codes = await response.json();
+        function closeModal() {
+            document.getElementById("displaced-modal").style.display = "none";
+        }
 
-      if (codes[val]) {
-        const entry = codes[val];
-        resp.innerHTML = `ACCESSING_ ${entry.title}...`;
-        resp.style.color = "white";
-        
-        // Short delay for the "system" aesthetic
-        setTimeout(() => { 
-          window.location.href = entry.url; 
-        }, 1200);
-      } else {
-        resp.innerHTML = "ERROR: CODE_NOT_FOUND";
-        resp.style.color = "red";
-      }
-    } catch (e) {
-      // This triggers if the codes.json file is missing or has a typo
-      resp.innerHTML = "SYSTEM_ERROR: DATABASE_OFFLINE";
-      console.error(e);
-    }
-  }
-</script>
+        // Close modal if clicking outside the box
+        window.onclick = function(event) {
+            let modal = document.getElementById("displaced-modal");
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
 
+        async function processQuery() {
+            const input = document.getElementById("query-input");
+            const val = input.value.toUpperCase().trim();
+            const resp = document.getElementById("response");
+            input.value = "";
+
+            try {
+                const response = await fetch('codes.json');
+                const codes = await response.json();
+
+                if (codes[val]) {
+                    const entry = codes[val];
+                    resp.innerHTML = `ACCESSING_ ${entry.title}...`;
+                    resp.style.color = "white";
+                    setTimeout(() => { window.location.href = entry.url; }, 1200);
+                } else {
+                    resp.innerHTML = "ERROR: CODE_NOT_FOUND";
+                    resp.style.color = "red";
+                }
+            } catch (e) {
+                resp.innerHTML = "SYSTEM_ERROR: DATABASE_OFFLINE";
+                console.error(e);
+            }
+        }
+    </script>
 </body>
 </html>
