@@ -21,7 +21,7 @@
             padding-top: 12vh;
         }
 
-        /* --- BRANDING GROUP --- */
+        /* --- BRANDING --- */
         .brand-group {
             display: flex;
             flex-direction: column;
@@ -38,20 +38,9 @@
             margin-bottom: 20px;
         }
 
-        .fade-text {
-            opacity: 0;
-            transition: opacity 0.8s ease-in-out;
-            pointer-events: none;
-        }
-
-        .symbol {
-            color: #fff;
-            padding: 0 10px;
-        }
-
-        .logo-box:hover .fade-text {
-            opacity: 1;
-        }
+        .fade-text { opacity: 0; transition: opacity 0.8s ease-in-out; pointer-events: none; }
+        .symbol { color: #fff; padding: 0 10px; }
+        .logo-box:hover .fade-text { opacity: 1; }
 
         .archive-link {
             font-size: 0.8rem;
@@ -62,25 +51,11 @@
             text-transform: uppercase;
             cursor: pointer;
         }
+        .archive-link:hover { color: #fff; letter-spacing: 6px; }
 
-        .archive-link:hover {
-            color: #fff;
-            letter-spacing: 6px;
-        }
-
-        /* --- TERMINAL GROUP --- */
-        #terminal-container { 
-            text-align: center; 
-            font-family: monospace; 
-        }
-
-        #input-line { 
-            display: flex; 
-            align-items: center;
-            justify-content: center;
-            position: relative; 
-            margin-bottom: 25px; 
-        }
+        /* --- TERMINAL --- */
+        #terminal-container { text-align: center; font-family: monospace; }
+        #input-line { display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 25px; }
 
         #query-input { 
             background: transparent; 
@@ -95,19 +70,9 @@
             transition: all 0.3s ease;
             text-align: center;
         }
+        #query-input:focus { border: 1px solid #666; background-color: rgba(255, 255, 255, 0.03); }
 
-        #query-input:focus {
-            border: 1px solid #666;
-            background-color: rgba(255, 255, 255, 0.03);
-        }
-
-        .cursor { 
-            animation: blink 1s step-end infinite; 
-            color: white; 
-            font-weight: bold; 
-            margin-left: 5px;
-        }
-
+        .cursor { animation: blink 1s step-end infinite; color: white; font-weight: bold; margin-left: 5px; }
         @keyframes blink { from, to { opacity: 1; } 50% { opacity: 0; } }
 
         #response {
@@ -115,24 +80,13 @@
             font-size: 0.8rem;
             letter-spacing: 2px;
             text-transform: uppercase;
-            /* Smooth transition for the color and text reset */
-            transition: color 0.5s ease, opacity 0.5s ease;
+            transition: opacity 0.5s ease, color 0.5s ease;
         }
 
-        /* --- HELP TRIGGER --- */
-        .help-trigger {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            color: #333;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: color 0.3s;
-            z-index: 900;
-        }
+        /* --- UI ELEMENTS --- */
+        .help-trigger { position: fixed; bottom: 20px; right: 20px; color: #333; font-size: 1.2rem; cursor: pointer; transition: color 0.3s; z-index: 900; }
         .help-trigger:hover { color: #fff; }
 
-        /* --- MODAL --- */
         .modal {
             display: none; 
             position: fixed;
@@ -155,25 +109,11 @@
         }
 
         .modal-header { color: #ff3b3b; font-size: 1.2rem; margin-bottom: 20px; letter-spacing: 2px; }
-        .modal-body { color: #ccc; font-size: 0.9rem; line-height: 1.6; margin-bottom: 30px; }
-        
+        .modal-body { color: #ccc; font-size: 0.9rem; line-height: 1.6; margin-bottom: 30px; text-align: left; }
         .command-item { margin-bottom: 15px; border-bottom: 1px solid #111; padding-bottom: 5px; }
         .command-item b { color: #fff; display: block; margin-bottom: 2px; }
-
         .archive-btn { display: inline-block; color: #000; background-color: #fff; padding: 10px 20px; text-decoration: none; font-weight: bold; }
-        
-        .close-btn {
-            margin-top: 25px;
-            display: inline-block;
-            color: #999;
-            font-size: 0.75rem;
-            text-decoration: none;
-            letter-spacing: 2px;
-            cursor: pointer;
-            border: 1px solid #333;
-            padding: 8px 15px;
-            transition: all 0.3s;
-        }
+        .close-btn { margin-top: 25px; display: inline-block; color: #999; font-size: 0.75rem; text-decoration: none; letter-spacing: 2px; cursor: pointer; border: 1px solid #333; padding: 8px 15px; transition: all 0.3s; }
         .close-btn:hover { color: #fff; border-color: #666; }
 
         input { -webkit-tap-highlight-color: transparent; }
@@ -204,7 +144,7 @@
     <div id="displaced-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">ACCESS_WARNING</div>
-            <div class="modal-body">
+            <div class="modal-body" style="text-align: center;">
                 SIGNAL DETECTED. ACCESSING DISPLACED ARCHIVE.<br><br>
                 <span style="color: #666;">[FILE_STATUS: UNVERIFIED]</span>
             </div>
@@ -216,24 +156,74 @@
     <div id="help-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header" style="color: #fff;">SYSTEM_MANUAL</div>
-            <div class="modal-body" style="text-align: left;">
-                <div class="command-item">
-                    <b>MANIFEST</b>
-                    <span style="color: #666;">Show all global node statuses.</span>
-                </div>
-                <div class="command-item">
-                    <b>STATUS</b>
-                    <span style="color: #666;">Check network integrity.</span>
-                </div>
-                <div class="command-item">
-                    <b>[HEX_CODE]</b>
-                    <span style="color: #666;">Direct bypass to fragment data.</span>
-                </div>
+            <div class="modal-body">
+                <div class="command-item"><b>MANIFEST</b><span style="color: #666;">Show global node statuses.</span></div>
+                <div class="command-item"><b>STATUS</b><span style="color: #666;">Check network integrity.</span></div>
+                <div class="command-item"><b>[HEX_CODE]</b><span style="color: #666;">Bypass to fragment data.</span></div>
             </div>
             <span class="close-btn" onclick="closeHelpModal()">CLOSE_MANUAL</span>
         </div>
     </div>
 
     <script>
-        // Modal Controls
-        function openModal(e) {
+        function openModal(e) { e.preventDefault(); document.getElementById("displaced-modal").style.display = "block"; }
+        function closeModal() { document.getElementById("displaced-modal").style.display = "none"; }
+        function openHelpModal() { document.getElementById("help-modal").style.display = "block"; }
+        function closeHelpModal() { document.getElementById("help-modal").style.display = "none"; }
+
+        window.onclick = function(event) {
+            if (event.target.className === 'modal') {
+                closeModal();
+                closeHelpModal();
+            }
+        }
+
+        function resetResponse() {
+            const resp = document.getElementById("response");
+            resp.style.opacity = "0";
+            setTimeout(() => {
+                resp.innerHTML = "INPUT CODE_";
+                resp.style.color = "#444";
+                resp.style.opacity = "1";
+            }, 500);
+        }
+
+        async function processQuery() {
+            const input = document.getElementById("query-input");
+            const val = input.value.toUpperCase().trim();
+            const resp = document.getElementById("response");
+            
+            if (!val) return;
+            input.value = "";
+
+            if (val === "MANIFEST") {
+                resp.innerHTML = "MANIFEST_COMMAND_PENDING...";
+                resp.style.color = "#aaa";
+                setTimeout(resetResponse, 3000);
+                return;
+            }
+
+            if (val === "STATUS") {
+                resp.innerHTML = "SYSTEM_STATUS: NOMINAL // INTEGRITY: 100%";
+                resp.style.color = "#00ff00";
+                setTimeout(resetResponse, 3000);
+                return;
+            }
+
+            try {
+                const response = await fetch('codes.json');
+                if (!response.ok) throw new Error('Database Offline');
+                const codes = await response.json();
+                
+                if (codes[val]) {
+                    resp.innerHTML = `ACCESSING_ ${codes[val].title}...`;
+                    resp.style.color = "white";
+                    setTimeout(() => { window.location.href = codes[val].url; }, 1200);
+                } else {
+                    resp.innerHTML = "ERROR: CODE_NOT_FOUND";
+                    resp.style.color = "red";
+                    setTimeout(resetResponse, 2000);
+                }
+            } catch (e) {
+                resp.innerHTML = "SYSTEM_ERROR: DATABASE_OFFLINE";
+                resp.style.color = "
