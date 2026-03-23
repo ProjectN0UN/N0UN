@@ -125,13 +125,22 @@
 
         #manifest-grid {
             font-size: 0.65rem;
-            color: #222; 
             column-count: 3;
             column-gap: 40px;
         }
 
-        .node-item { margin-bottom: 4px; font-family: monospace; }
-        .node-active { color: #fff; text-shadow: 0 0 5px #fff; }
+        .node-item { margin-bottom: 4px; font-family: monospace; color: #222; }
+        
+        .node-active { 
+            color: #fff !important; 
+            text-shadow: 0 0 8px rgba(255,255,255,0.5);
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
 
         /* --- UI ELEMENTS --- */
         .help-trigger { position: fixed; bottom: 20px; right: 20px; color: #333; font-size: 1.2rem; cursor: pointer; transition: color 0.3s; z-index: 900; }
@@ -287,17 +296,22 @@
                         keys.forEach((key, index) => {
                             const div = document.createElement("div");
                             div.className = "node-item";
-                            // Checks if URL is valid and not just a placeholder
-                            if (codes[key].url && codes[key].url !== "#" && codes[key].url !== "") {
+                            
+                            // Check for actual URL starting with http
+                            const isLive = codes[key].url && codes[key].url.startsWith('http');
+                            
+                            if (isLive) {
                                 div.classList.add("node-active");
+                                div.innerHTML = `[${index.toString().padStart(3, '0')}] NODE_${key} // <span style="color: #00ff00; text-shadow: 0 0 5px #00ff00;">ACTIVE</span>`;
+                            } else {
+                                div.innerHTML = `[${index.toString().padStart(3, '0')}] NODE_${key} // OFFLINE`;
                             }
-                            div.innerHTML = `[${index.toString().padStart(3, '0')}] NODE_${key} // OK`;
                             grid.appendChild(div);
                         });
                         
                         resp.innerHTML = "SCAN_COMPLETE: 100 NODES MAPPED";
                     } catch (e) {
-                        resp.innerHTML = "ERROR: MANIFEST_FILE_MISSING";
+                        resp.innerHTML = "ERROR: MANIFEST_DATA_CORRUPT";
                         setTimeout(resetResponse, 2000);
                     }
                 }
