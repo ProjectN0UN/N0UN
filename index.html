@@ -245,4 +245,92 @@
             const resp = document.getElementById("response");
             resp.style.opacity = "0";
             setTimeout(() => {
-                resp.innerHTML = "INPUT CODE
+                resp.innerHTML = "INPUT CODE_";
+                resp.style.color = "#444";
+                resp.style.opacity = "1";
+            }, 500);
+        }
+
+        async function processQuery() {
+            const input = document.getElementById("query-input");
+            const val = input.value.toUpperCase().trim();
+            const resp = document.getElementById("response");
+            const overlay = document.getElementById("manifest-overlay");
+            const grid = document.getElementById("manifest-grid");
+            
+            if (!val) return;
+            input.value = "";
+
+            if (val === "MANIFEST") {
+                let percent = 0;
+                resp.style.color = "#fff";
+                
+                const interval = setInterval(() => {
+                    percent += Math.floor(Math.random() * 15) + 5;
+                    if (percent >= 100) {
+                        percent = 100;
+                        clearInterval(interval);
+                        startManifest();
+                    }
+                    resp.innerHTML = `INITIALIZING_SCAN: ${percent}%`;
+                }, 80);
+
+                async function startManifest() {
+                    try {
+                        const response = await fetch('codes.json');
+                        const codes = await response.json();
+                        const keys = Object.keys(codes);
+
+                        grid.innerHTML = "";
+                        overlay.classList.add("active");
+
+                        keys.forEach((key, index) => {
+                            const div = document.createElement("div");
+                            div.className = "node-item";
+                            // Checks if URL is valid and not just a placeholder
+                            if (codes[key].url && codes[key].url !== "#" && codes[key].url !== "") {
+                                div.classList.add("node-active");
+                            }
+                            div.innerHTML = `[${index.toString().padStart(3, '0')}] NODE_${key} // OK`;
+                            grid.appendChild(div);
+                        });
+                        
+                        resp.innerHTML = "SCAN_COMPLETE: 100 NODES MAPPED";
+                    } catch (e) {
+                        resp.innerHTML = "ERROR: MANIFEST_FILE_MISSING";
+                        setTimeout(resetResponse, 2000);
+                    }
+                }
+                return;
+            }
+
+            if (val === "STATUS") {
+                resp.innerHTML = "SYSTEM_STATUS: NOMINAL // INTEGRITY: 100%";
+                resp.style.color = "#00ff00";
+                setTimeout(resetResponse, 3000);
+                return;
+            }
+
+            try {
+                const response = await fetch('codes.json');
+                if (!response.ok) throw new Error('Database Offline');
+                const codes = await response.json();
+                
+                if (codes[val]) {
+                    resp.innerHTML = `ACCESSING_ ${codes[val].title}...`;
+                    resp.style.color = "white";
+                    setTimeout(() => { window.location.href = codes[val].url; }, 1200);
+                } else {
+                    resp.innerHTML = "ERROR: CODE_NOT_FOUND";
+                    resp.style.color = "red";
+                    setTimeout(resetResponse, 2000);
+                }
+            } catch (e) {
+                resp.innerHTML = "SYSTEM_ERROR: DATABASE_OFFLINE";
+                resp.style.color = "red";
+                setTimeout(resetResponse, 2000);
+            }
+        }
+    </script>
+</body>
+</html>
