@@ -91,15 +91,46 @@
             width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.98);
             z-index: 2000;
-            padding: 40px;
+            padding: 20px 40px 40px 40px;
             box-sizing: border-box;
             overflow-y: auto;
+        }
+        #manifest-overlay.active { display: block; }
+
+        .manifest-header {
+            position: sticky;
+            top: 0;
+            background: #000;
+            padding: 20px 0;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #222;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 2100;
+        }
+
+        .manifest-title { font-size: 1rem; letter-spacing: 4px; color: #fff; }
+
+        .manifest-close {
+            color: #fff;
+            border: 1px solid #fff;
+            padding: 5px 15px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background 0.3s, color 0.3s;
+        }
+        .manifest-close:hover { background: #fff; color: #000; }
+
+        #manifest-grid {
             font-size: 0.65rem;
             color: #222; 
             column-count: 3;
+            column-gap: 40px;
         }
-        #manifest-overlay.active { display: block; }
-        .node-item { margin-bottom: 4px; font-family: monospace; transition: color 0.2s; }
+
+        .node-item { margin-bottom: 4px; font-family: monospace; }
         .node-active { color: #fff; text-shadow: 0 0 5px #fff; }
 
         /* --- UI ELEMENTS --- */
@@ -140,7 +171,13 @@
 </head>
 <body onclick="document.getElementById('query-input').focus()">
 
-    <div id="manifest-overlay"></div>
+    <div id="manifest-overlay">
+        <div class="manifest-header">
+            <div class="manifest-title">GLOBAL_NODE_MANIFEST</div>
+            <div class="manifest-close" onclick="closeManifest()">[CLOSE_TERMINAL]</div>
+        </div>
+        <div id="manifest-grid"></div>
+    </div>
 
     <div class="help-trigger" onclick="openHelpModal()">?</div>
 
@@ -192,6 +229,11 @@
         function openHelpModal() { document.getElementById("help-modal").style.display = "block"; }
         function closeHelpModal() { document.getElementById("help-modal").style.display = "none"; }
 
+        function closeManifest() {
+            document.getElementById("manifest-overlay").classList.remove("active");
+            resetResponse();
+        }
+
         window.onclick = function(event) {
             if (event.target.className === 'modal') {
                 closeModal();
@@ -203,96 +245,4 @@
             const resp = document.getElementById("response");
             resp.style.opacity = "0";
             setTimeout(() => {
-                resp.innerHTML = "INPUT CODE_";
-                resp.style.color = "#444";
-                resp.style.opacity = "1";
-            }, 500);
-        }
-
-        async function processQuery() {
-            const input = document.getElementById("query-input");
-            const val = input.value.toUpperCase().trim();
-            const resp = document.getElementById("response");
-            const overlay = document.getElementById("manifest-overlay");
-            
-            if (!val) return;
-            input.value = "";
-
-            if (val === "MANIFEST") {
-                let percent = 0;
-                resp.style.color = "#fff";
-                
-                // Ticking Percentage Counter
-                const interval = setInterval(() => {
-                    percent += Math.floor(Math.random() * 15) + 5;
-                    if (percent >= 100) {
-                        percent = 100;
-                        clearInterval(interval);
-                        startManifest();
-                    }
-                    resp.innerHTML = `INITIALIZING_SCAN: ${percent}%`;
-                }, 80);
-
-                async function startManifest() {
-                    try {
-                        const response = await fetch('codes.json');
-                        const codes = await response.json();
-                        const keys = Object.keys(codes);
-
-                        overlay.innerHTML = "";
-                        overlay.classList.add("active");
-
-                        keys.forEach((key, index) => {
-                            const div = document.createElement("div");
-                            div.className = "node-item";
-                            if (codes[key].url && codes[key].url !== "#") {
-                                div.classList.add("node-active");
-                            }
-                            div.innerHTML = `[${index.toString().padStart(3, '0')}] NODE_${key} // OK`;
-                            overlay.appendChild(div);
-                        });
-
-                        setTimeout(() => {
-                            overlay.classList.remove("active");
-                            resp.innerHTML = "SCAN_COMPLETE: 100 NODES MAPPED";
-                            setTimeout(resetResponse, 3000);
-                        }, 4000);
-                    } catch (e) {
-                        resp.innerHTML = "ERROR: MANIFEST_FILE_MISSING";
-                        setTimeout(resetResponse, 2000);
-                    }
-                }
-                return;
-            }
-
-            if (val === "STATUS") {
-                resp.innerHTML = "SYSTEM_STATUS: NOMINAL // INTEGRITY: 100%";
-                resp.style.color = "#00ff00";
-                setTimeout(resetResponse, 3000);
-                return;
-            }
-
-            try {
-                const response = await fetch('codes.json');
-                if (!response.ok) throw new Error('Database Offline');
-                const codes = await response.json();
-                
-                if (codes[val]) {
-                    resp.innerHTML = `ACCESSING_ ${codes[val].title}...`;
-                    resp.style.color = "white";
-                    setTimeout(() => { window.location.href = codes[val].url; }, 1200);
-                } else {
-                    resp.innerHTML = "ERROR: CODE_NOT_FOUND";
-                    resp.style.color = "red";
-                    setTimeout(resetResponse, 2000);
-                }
-            } catch (e) {
-                console.error("Fetch error:", e);
-                resp.innerHTML = "SYSTEM_ERROR: DATABASE_OFFLINE";
-                resp.style.color = "red";
-                setTimeout(resetResponse, 2000);
-            }
-        }
-    </script>
-</body>
-</html>
+                resp.innerHTML = "INPUT CODE
