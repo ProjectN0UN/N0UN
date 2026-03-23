@@ -83,6 +83,25 @@
             transition: opacity 0.5s ease, color 0.5s ease;
         }
 
+        /* --- MANIFEST OVERLAY --- */
+        #manifest-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.98);
+            z-index: 2000;
+            padding: 40px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            font-size: 0.65rem;
+            color: #222; 
+            column-count: 3;
+        }
+        #manifest-overlay.active { display: block; }
+        .node-item { margin-bottom: 4px; font-family: monospace; transition: color 0.2s; }
+        .node-active { color: #fff; text-shadow: 0 0 5px #fff; }
+
         /* --- UI ELEMENTS --- */
         .help-trigger { position: fixed; bottom: 20px; right: 20px; color: #333; font-size: 1.2rem; cursor: pointer; transition: color 0.3s; z-index: 900; }
         .help-trigger:hover { color: #fff; }
@@ -119,7 +138,9 @@
         input { -webkit-tap-highlight-color: transparent; }
     </style>
 </head>
-<body>
+<body onclick="document.getElementById('query-input').focus()">
+
+    <div id="manifest-overlay"></div>
 
     <div class="help-trigger" onclick="openHelpModal()">?</div>
 
@@ -192,14 +213,55 @@
             const input = document.getElementById("query-input");
             const val = input.value.toUpperCase().trim();
             const resp = document.getElementById("response");
+            const overlay = document.getElementById("manifest-overlay");
             
             if (!val) return;
             input.value = "";
 
             if (val === "MANIFEST") {
-                resp.innerHTML = "MANIFEST_COMMAND_PENDING...";
-                resp.style.color = "#aaa";
-                setTimeout(resetResponse, 3000);
+                let percent = 0;
+                resp.style.color = "#fff";
+                
+                // Ticking Percentage Counter
+                const interval = setInterval(() => {
+                    percent += Math.floor(Math.random() * 15) + 5;
+                    if (percent >= 100) {
+                        percent = 100;
+                        clearInterval(interval);
+                        startManifest();
+                    }
+                    resp.innerHTML = `INITIALIZING_SCAN: ${percent}%`;
+                }, 80);
+
+                async function startManifest() {
+                    try {
+                        const response = await fetch('codes.json');
+                        const codes = await response.json();
+                        const keys = Object.keys(codes);
+
+                        overlay.innerHTML = "";
+                        overlay.classList.add("active");
+
+                        keys.forEach((key, index) => {
+                            const div = document.createElement("div");
+                            div.className = "node-item";
+                            if (codes[key].url && codes[key].url !== "#") {
+                                div.classList.add("node-active");
+                            }
+                            div.innerHTML = `[${index.toString().padStart(3, '0')}] NODE_${key} // OK`;
+                            overlay.appendChild(div);
+                        });
+
+                        setTimeout(() => {
+                            overlay.classList.remove("active");
+                            resp.innerHTML = "SCAN_COMPLETE: 100 NODES MAPPED";
+                            setTimeout(resetResponse, 3000);
+                        }, 4000);
+                    } catch (e) {
+                        resp.innerHTML = "ERROR: MANIFEST_FILE_MISSING";
+                        setTimeout(resetResponse, 2000);
+                    }
+                }
                 return;
             }
 
@@ -224,22 +286,12 @@
                     resp.style.color = "red";
                     setTimeout(resetResponse, 2000);
                 }
-           } catch (e) {
+            } catch (e) {
                 console.error("Fetch error:", e);
                 resp.innerHTML = "SYSTEM_ERROR: DATABASE_OFFLINE";
                 resp.style.color = "red";
                 setTimeout(resetResponse, 2000);
             }
-        } // This bracket closes the processQuery function
-
-        function resetResponse() {
-            const resp = document.getElementById("response");
-            resp.style.opacity = "0";
-            setTimeout(() => {
-                resp.innerHTML = "INPUT CODE_";
-                resp.style.color = "#444";
-                resp.style.opacity = "1";
-            }, 500);
         }
     </script>
 </body>
