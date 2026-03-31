@@ -129,7 +129,6 @@
             column-gap: 40px;
         }
 
-        /* INACTIVE NODES - Visually present but dim */
         .node-item { 
             margin-bottom: 4px; 
             font-family: monospace; 
@@ -137,11 +136,11 @@
             transition: color 0.3s ease;
         }
         
-        /* ACTIVE NODES - Glowing and Pulsing */
         .node-active { 
             color: #fff !important; 
             text-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
             animation: pulse 2.5s infinite ease-in-out;
+            cursor: pointer !important;
         }
 
         @keyframes pulse {
@@ -149,8 +148,48 @@
             50% { opacity: 0.6; filter: brightness(130%); }
         }
 
+        /* --- IMAGE VIEWER MODAL --- */
+        #image-viewer {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+            cursor: zoom-out;
+        }
+
+        #image-viewer img {
+            max-width: 90%;
+            max-height: 80%;
+            border: 1px solid #333;
+        }
+
+        .img-caption {
+            position: absolute;
+            bottom: 5vh;
+            color: #00ff00;
+            font-family: monospace;
+            letter-spacing: 4px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+        }
+
         /* --- UI ELEMENTS --- */
-        .help-trigger { position: fixed; bottom: 20px; right: 20px; color: #333; font-size: 1.2rem; cursor: pointer; transition: color 0.3s; z-index: 900; }
+        .help-trigger { 
+            position: fixed; 
+            bottom: 20px; 
+            right: 20px; 
+            color: #666; /* Lightened from #333 */
+            font-size: 1.2rem; 
+            cursor: pointer; 
+            transition: color 0.3s; 
+            z-index: 900; 
+        }
         .help-trigger:hover { color: #fff; }
 
         .modal {
@@ -186,6 +225,11 @@
     </style>
 </head>
 <body onclick="document.getElementById('query-input').focus()">
+
+    <div id="image-viewer" onclick="this.style.display='none'">
+        <img id="full-resource-img" src="" alt="NODE_DATA">
+        <div class="img-caption" id="img-caption">ORIGIN_VERIFICATION_COMPLETE</div>
+    </div>
 
     <div id="manifest-overlay">
         <div class="manifest-header">
@@ -300,22 +344,34 @@
                         grid.innerHTML = "";
                         overlay.classList.add("active");
 
-                       keys.forEach((key, index) => {
+                        keys.forEach((key, index) => {
                             const div = document.createElement("div");
                             div.className = "node-item";
-    
+                            
                             const isLive = codes[key].url && codes[key].url.startsWith('http');
-                            // This line pulls the text from JSON, or defaults to "OFFLINE"
                             const statusText = isLive ? (codes[key].status || "ACTIVE") : "OFFLINE";
-    
+                            
                             if (isLive) {
                                 div.classList.add("node-active");
                                 div.innerHTML = `[${index.toString().padStart(3, '0')}] NODE_${key} // <span style="color: #00ff00; text-shadow: 0 0 5px #00ff00;">${statusText}</span>`;
+                                
+                                // Verification Click Event
+                                div.onclick = (e) => {
+                                    e.stopPropagation();
+                                    const viewer = document.getElementById("image-viewer");
+                                    const img = document.getElementById("full-resource-img");
+                                    const caption = document.getElementById("img-caption");
+                                    
+                                    // Set image source from JSON (or placeholder if missing)
+                                    img.src = codes[key].image || "https://placehold.co/600x400/000/fff?text=VERIFICATION_REQUIRED";
+                                    caption.innerHTML = `NODE_${key} // ORIGIN_VERIFIED_AUTHENTIC`;
+                                    viewer.style.display = "flex";
+                                };
                             } else {
                                 div.innerHTML = `[${index.toString().padStart(3, '0')}] NODE_${key} // ${statusText}`;
                             }
                             grid.appendChild(div);
-                });
+                        });
                         
                         resp.innerHTML = "SCAN_COMPLETE: 100 NODES MAPPED";
                     } catch (e) {
