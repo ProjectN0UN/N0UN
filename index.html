@@ -132,7 +132,7 @@
         .node-item { 
             margin-bottom: 4px; 
             font-family: monospace; 
-            color: rgba(255, 255, 255, 0.3); 
+            color: rgba(255, 255, 255, 0.2); 
             transition: color 0.3s ease;
         }
         
@@ -184,7 +184,7 @@
             position: fixed; 
             bottom: 20px; 
             right: 20px; 
-            color: #666; /* Lightened from #333 */
+            color: #666;
             font-size: 1.2rem; 
             cursor: pointer; 
             transition: color 0.3s; 
@@ -348,24 +348,27 @@
                             const div = document.createElement("div");
                             div.className = "node-item";
                             
-                            const isLive = codes[key].url && codes[key].url.startsWith('http');
-                            const statusText = isLive ? (codes[key].status || "ACTIVE") : "OFFLINE";
+                            const isLive = codes[key].status && codes[key].status.toUpperCase() === "ACTIVE";
+                            const statusText = isLive ? "ACTIVE" : "OFFLINE";
                             
                             if (isLive) {
                                 div.classList.add("node-active");
                                 div.innerHTML = `[${index.toString().padStart(3, '0')}] NODE_${key} // <span style="color: #00ff00; text-shadow: 0 0 5px #00ff00;">${statusText}</span>`;
                                 
-                                // Verification Click Event
+                                // CLICK: Shows Verification Image ONLY
                                 div.onclick = (e) => {
                                     e.stopPropagation();
                                     const viewer = document.getElementById("image-viewer");
                                     const img = document.getElementById("full-resource-img");
                                     const caption = document.getElementById("img-caption");
                                     
-                                    // Set image source from JSON (or placeholder if missing)
-                                    img.src = codes[key].image || "https://placehold.co/600x400/000/fff?text=VERIFICATION_REQUIRED";
-                                    caption.innerHTML = `NODE_${key} // ORIGIN_VERIFIED_AUTHENTIC`;
-                                    viewer.style.display = "flex";
+                                    if (codes[key].image) {
+                                        img.src = codes[key].image;
+                                        caption.innerHTML = `NODE_${key} // ORIGIN_VERIFIED_AUTHENTIC`;
+                                        viewer.style.display = "flex";
+                                    } else {
+                                        console.log("No verification image linked for this node.");
+                                    }
                                 };
                             } else {
                                 div.innerHTML = `[${index.toString().padStart(3, '0')}] NODE_${key} // ${statusText}`;
